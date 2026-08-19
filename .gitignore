@@ -1,0 +1,21 @@
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual Environment
+.venv/
+venv/
+
+# PyCharm
+.idea/
+
+# Environment variables / API keys
+.env
+
+# Generated FAISS index
+vectorstore/
+
+# OS files
+.DS_Store
+Thumbs.db
