@@ -1,32 +1,181 @@
 # University Course Syllabus & Exam Assistant
 
+*An AI assistant that answers syllabus questions, simulates GPA impact, and helps plan study time — grounded in each course's actual syllabus.*
+
+This is **Project #5** from the **ConnectX Final Project Showcase**.
+
+---
+
 ## Project Overview
 
-<!-- Project description will be added here. -->
+The **University Course Syllabus & Exam Assistant** is an AI-powered assistant that helps students understand their course syllabi, see how upcoming grades affect their GPA, and plan study time for exams — with syllabus answers grounded in the actual syllabus documents rather than guessed.
+
+### Problem It Solves
+
+Throughout a semester, students juggle multiple course syllabi containing exam dates, grading breakdowns, attendance policies, and course rules. Important details are easy to miss or misremember, and manually working out GPA scenarios or a study plan across several exams is tedious and error-prone. This project addresses that by combining:
+
+* A **retrieval-grounded** question-answering system, so answers about a course trace back to the actual syllabus text instead of being guessed by the model.
+* Deterministic **GPA** and **study schedule** tools, so calculations are reliable instead of left to an LLM to compute freehand.
+* **Multi-turn conversation memory**, so students can ask follow-up questions without repeating context.
+
+### Required Capabilities
+
+* Grounded Syllabus RAG
+* GPA Impact Simulator
+* Study Schedule Generator
+* Multi-Turn Conversation Memory
 
 ---
 
 ## Main Features
 
-<!-- Main project features will be added here. -->
+| Feature | Description |
+|---|---|
+| **Grounded Syllabus RAG** | Answers student questions about a course using only content retrieved from that course's syllabus. |
+| **GPA Impact Simulator** | Calculates how hypothetical grades affect a student's overall GPA using deterministic Python logic. |
+| **Study Schedule Generator** | Produces a study plan based on course/exam information using deterministic Python logic. |
+| **Multi-Turn Conversation Memory** | Keeps track of the conversation across multiple turns so follow-up questions retain context. |
+
+### MVP Scope
+
+The minimum viable product for this project is:
+
+1. Ingest syllabus documents and build a FAISS index over them.
+2. Answer syllabus questions grounded only in retrieved chunks.
+3. Calculate GPA impact from user-supplied grades.
+4. Generate a basic study schedule from course/exam information.
+5. Retain conversation context across multiple turns within a session.
+
+> None of the above is implemented yet — the repository is currently at the scaffolding stage. See [Current Project Status](#current-project-status).
 
 ---
 
 ## Tech Stack
 
-<!-- Technologies used in the project will be added here. -->
+| Category | Technology |
+|---|---|
+| Language | Python |
+| Backend framework | FastAPI |
+| Data validation | Pydantic |
+| LLM orchestration | LangChain |
+| Agent / graph orchestration | LangGraph |
+| Vector store | FAISS (`faiss-cpu`) |
+| Embeddings | HuggingFace embeddings (`langchain-huggingface`) |
+| LLM provider | Groq API (`langchain-groq`, `groq`) |
+| PDF parsing | `pypdf` |
+| Configuration | `python-dotenv` |
+| Frontend | HTML, CSS, Vanilla JavaScript |
+
+Exact package versions are pinned in [`requirements.txt`](./requirements.txt).
 
 ---
 
 ## Project Architecture
 
-<!-- Project architecture will be documented here. -->
+### Architecture Philosophy
+
+Responsibilities are intentionally kept separate so each part of the system has one job:
+
+```text
+LLM       → reasoning and natural-language responses
+RAG       → retrieving syllabus information
+Tools     → deterministic calculations
+FastAPI   → backend API
+Frontend  → user interface
+```
+
+Keeping GPA and scheduling calculations in plain Python (instead of asking the LLM to compute them) keeps those results reliable and testable.
+
+### Application Workflow
+
+```text
+Frontend
+   ↓
+FastAPI
+   ↓
+Assistant / Application Logic
+   ├── Syllabus question → RAG
+   ├── GPA request       → GPA Tool
+   └── Study planning    → Study Schedule Tool
+```
+
+This describes the intended request path once the backend and frontend are implemented — see [Current Project Status](#current-project-status).
 
 ---
 
 ## Project Structure
 
-<!-- Folder structure will be added here. -->
+```text
+backend/
+├── app/
+│   ├── __init__.py
+│   └── main.py
+├── document_processing/
+│   ├── __init__.py
+│   ├── document_loader.py
+│   └── chunker.py
+├── rag/
+│   ├── __init__.py
+│   ├── embeddings.py
+│   ├── vector_store.py
+│   ├── retriever.py
+│   └── rag_chain.py
+├── tools/
+│   ├── __init__.py
+│   ├── gpa_calculator.py
+│   └── study_schedule.py
+├── memory/
+│   ├── __init__.py
+│   └── chat_memory.py
+└── models/
+    ├── __init__.py
+    └── schemas.py
+
+data/
+├── raw/
+│   └── syllabi/
+└── processed/
+
+vectorstore/
+└── faiss_index/
+
+frontend/
+├── css/
+│   └── style.css
+├── js/
+│   └── app.js
+└── index.html
+
+tests/
+├── __init__.py
+├── test_document_processing.py   # Teammate #2
+├── test_rag.py                   # Teammate #1
+├── test_tools.py                 # Teammate #3
+└── test_api.py                   # Teammate #5
+
+.env.example
+.gitignore
+README.md
+requirements.txt
+```
+
+### Folder Responsibilities
+
+| Folder | Responsibility |
+|---|---|
+| `backend/app/` | FastAPI application and backend entry point |
+| `backend/document_processing/` | Loading, cleaning, and chunking syllabus documents |
+| `backend/rag/` | Embeddings, FAISS indexing, retrieval, and the grounded RAG chain |
+| `backend/tools/` | Deterministic GPA and study-schedule calculation tools |
+| `backend/memory/` | Multi-turn conversation memory |
+| `backend/models/` | Pydantic request/response data models |
+| `data/raw/` | Original syllabus documents (e.g. `data/raw/syllabi/`) |
+| `data/processed/` | Cleaned/chunked document data prepared for embedding |
+| `vectorstore/faiss_index/` | Generated FAISS vector index files |
+| `frontend/` | HTML/CSS/Vanilla JavaScript user interface |
+| `tests/` | Project tests |
+
+All folders above currently contain only scaffolding (empty `__init__.py` files or empty starter files) — see [Current Project Status](#current-project-status).
 
 ---
 
@@ -533,25 +682,75 @@ This keeps all team members on the same dependencies.
 
 ## Running the Project
 
-<!-- Backend and frontend run commands will be added once the applications are implemented. -->
+`backend/app/main.py` and the frontend files are currently empty scaffolding, so there is no runnable application yet.
+
+Once the FastAPI app is implemented, the backend is expected to run as:
+
+```bash
+uvicorn backend.app.main:app --reload
+```
+
+executed from the project root, with the frontend served as static files alongside it. This section will be updated with the actual run instructions once `backend/app/main.py` defines the FastAPI application.
 
 ---
 
 ## Environment Variables
 
-<!-- Required environment variables will be documented here. -->
+Environment variables are configured via a local `.env` file, created from `.env.example` (see [Development Setup](#development-setup), steps 9–11). Never commit real values.
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `GROQ_API_KEY` | Yes | API key for the Groq LLM, used by `langchain-groq` / `groq`. |
+
+This is currently the only variable defined in `.env.example`. More may be added here as the RAG and backend features are implemented.
 
 ---
 
 ## API Documentation
 
-<!-- FastAPI endpoints will be documented here. -->
+`backend/app/main.py` does not yet define a FastAPI application or any routes, so there are currently **no API endpoints implemented**.
+
+Once the backend is implemented (see [Team Responsibilities](#team-responsibilities), Teammate #5), this section will document each endpoint's method, path, request schema, and response schema based on the actual code in `backend/app/` and `backend/models/`.
 
 ---
 
 ## RAG Pipeline
 
-<!-- Document loading, chunking, embeddings, FAISS, retrieval, and grounding will be documented here. -->
+`backend/rag/` currently contains only an empty `__init__.py`. The pipeline below describes the intended design, not yet-implemented behavior.
+
+```text
+Syllabus PDFs
+     ↓
+Document Loading
+     ↓
+Cleaning / Chunking
+     ↓
+HuggingFace Embeddings
+     ↓
+FAISS Vector Store
+     ↓
+Retriever
+     ↓
+Retrieved Context
+     ↓
+Groq LLM
+     ↓
+Grounded Answer
+```
+
+### Grounding & Safety Rules
+
+The syllabus assistant must follow these rules:
+
+* Syllabus-related answers must come only from retrieved syllabus content.
+* The assistant must not invent syllabus information.
+* It must never fabricate:
+  * exam dates
+  * grading percentages
+  * attendance rules
+  * course policies
+* If the information cannot be found in the syllabus, the assistant should clearly state that the information is unavailable and recommend checking with the Teaching Assistant.
+* Deterministic calculations such as GPA and study scheduling are handled by the Python tools in `backend/tools/`, not by the LLM.
 
 ---
 
@@ -559,50 +758,108 @@ This keeps all team members on the same dependencies.
 
 ### GPA Impact Simulator
 
-<!-- Documentation will be added here. -->
+Calculates how hypothetical or upcoming grades affect a student's overall GPA. This is a deterministic Python calculation (not delegated to the LLM), intended to live in `backend/tools/`.
+
+**Status:** Planned — not yet implemented (`backend/tools/` currently contains only an empty `__init__.py`).
 
 ### Study Schedule Generator
 
-<!-- Documentation will be added here. -->
+Generates a study schedule based on a student's courses and exam dates, using deterministic Python logic alongside the GPA tool in `backend/tools/`.
+
+**Status:** Planned — not yet implemented.
 
 ---
 
 ## Conversation Memory
 
-<!-- Multi-turn conversation memory implementation will be documented here. -->
+Maintains context across multiple turns of a conversation so the assistant can answer follow-up questions without the student repeating earlier context. Intended to live in `backend/memory/`.
+
+**Status:** Planned — not yet implemented (`backend/memory/` currently contains only an empty `__init__.py`).
 
 ---
 
 ## Frontend
 
-<!-- Frontend documentation will be added here. -->
+A plain HTML/CSS/Vanilla JavaScript interface that will communicate with the FastAPI backend once it is implemented.
+
+Current files:
+
+* `frontend/index.html` — starter HTML skeleton (no content yet)
+* `frontend/css/style.css` — empty
+* `frontend/js/app.js` — empty
+
+**Status:** Not yet built.
 
 ---
 
 ## Testing
 
-<!-- Testing instructions will be added here. -->
+The `tests/` folder exists but is currently empty — no test files have been added yet. `pytest` is not yet listed in `requirements.txt`; add it (and update `requirements.txt`) when the team starts writing tests.
+
+Planned areas to cover once the corresponding features are implemented:
+
+* Unit tests for the GPA and study schedule tools (deterministic, so straightforward to test)
+* Retrieval tests for the RAG pipeline
+* API endpoint tests once `backend/app/main.py` defines routes
 
 ---
 
 ## Git Workflow
 
-<!-- Branching, commits, and pull request workflow will be documented here. -->
+Recommended workflow for the team:
+
+* Create a feature branch per task/feature instead of committing directly to `main`.
+* Open a pull request and get at least one review before merging.
+* Write clear, descriptive commit messages.
+* Pull the latest `main` before starting new work to avoid conflicts.
+* If a change adds a new package, update `requirements.txt` in the same pull request (see [Development Setup](#development-setup), step 19).
+* Never commit `.env` or `.venv/` (see [Development Setup](#development-setup), steps 11–12).
 
 ---
 
 ## Team Responsibilities
 
-<!-- Team member responsibilities will be added here. -->
+| # | Focus Area | Responsible For | Main Folders |
+|---|---|---|---|
+| 1 | RAG | Embeddings, FAISS vector store, retrieval, RAG chain | `backend/rag/`, `vectorstore/` |
+| 2 | Document Processing | Syllabus documents, document loading, text cleaning, chunking, preparing documents for RAG | `backend/document_processing/`, `data/` |
+| 3 | AI Tools / Memory / Agent Integration | GPA calculator, study schedule generator, conversation memory, later AI/tool integration | `backend/tools/`, `backend/memory/` |
+| 4 | Frontend | HTML, CSS, Vanilla JavaScript, communicating with FastAPI endpoints | `frontend/` |
+| 5 | Backend | FastAPI, API endpoints, Pydantic request/response models, backend integration | `backend/app/`, `backend/models/` |
 
 ---
 
 ## Contributors
 
-<!-- Team members will be added here. -->
+This project is built by a team of 5 students, with responsibilities as listed in [Team Responsibilities](#team-responsibilities) above.
+
+<!-- Add team member names / GitHub handles here. -->
+
+---
+
+## Current Project Status
+
+The repository is currently in the **initial scaffolding / planning stage**:
+
+* Folder structure for backend, frontend, data, and vector store is in place.
+* `requirements.txt` and the Python virtual environment are set up.
+* `.env.example` documents the required `GROQ_API_KEY`.
+* `backend/app/main.py` and the files under `backend/document_processing/`, `backend/rag/`, `backend/tools/`, `backend/memory/`, and `backend/models/` are empty `__init__.py` placeholders — no application logic has been written yet.
+* `frontend/` contains only an empty HTML skeleton, empty CSS, and empty JavaScript.
+* `tests/` is empty.
+* No FAISS index has been generated yet (`vectorstore/faiss_index/` is empty), and no syllabus documents have been added yet (`data/raw/syllabi/` is empty).
+
+None of the four core features (Grounded Syllabus RAG, GPA Impact Simulator, Study Schedule Generator, Multi-Turn Conversation Memory) are implemented yet.
 
 ---
 
 ## Future Improvements
 
-<!-- Optional improvements will be added here. -->
+Optional enhancements to consider once the MVP is complete:
+
+* Support for multiple courses/syllabi at once
+* Persistent (cross-session) conversation memory, e.g. backed by a database
+* Deployment (containerization, hosting)
+* Automated CI pipeline for tests
+* Expanded automated test coverage
+* Improved frontend UI/UX
