@@ -1,10 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grounded — Syllabus & Exam Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
+<header class="site">
+  <div class="wrap nav">
+    <div class="brand"><span class="brand-mark">G</span>Grounded</div>
+    <nav class="nav-links">
+      <a href="#demo">How it works</a>
+      <a href="#tools">Tools</a>
+      <a href="#stack">Tech stack</a>
+    </nav>
+    <a href="#tools" class="btn btn-primary">Upload syllabus</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Course companion, not a guesser</div>
+      <h1>Every answer traced back to <em>your syllabus.</em></h1>
+      <p class="lead">Upload your course syllabus and ask anything — grading, exam dates, attendance rules. If it isn't written down, we say so instead of making it up.</p>
+      <div class="hero-cta">
+        <a href="#demo" class="btn btn-primary">See a grounded answer</a>
+        <a href="#tools" class="btn btn-ghost">Try the GPA tool</a>
+      </div>
+      <div class="stat-strip">
+        <div class="stat"><b>0</b><span>Guessed answers</span></div>
+        <div class="stat"><b>2</b><span>Built-in calculators</span></div>
+        <div class="stat"><b>1:1</b><span>Answer to source</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="page-mock">
+        <div class="page-row"><span>Final Exam</span><b class="circle-mark">50%</b></div>
+        <div class="page-line"></div>
+        <div class="page-row"><span>Midterm</span><b>20%</b></div>
+        <div class="page-line"></div>
+        <div class="page-row"><span>Assignments</span><b>20%</b></div>
+        <div class="page-line"></div>
+        <div class="page-row"><span>Attendance</span><b>10%</b></div>
+        <div class="margin-note">worth 50% — cite this ↗</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section demo" id="demo">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Grounded RAG</div>
+      <h2>Answers come with receipts.</h2>
+      <p>Each response links back to the exact line in your syllabus it came from. No source, no answer — the assistant says so and points you to your TA instead.</p>
+    </div>
+    <div class="demo-grid">
+      <div class="chat-panel">
+        <div class="panel-label">Conversation</div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="bubble user">How much is the final exam worth?</div>
+          <div class="bubble ai">The final exam accounts for 50% of your course grade<span class="cite">1</span>.</div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" id="chatInput" placeholder="Ask about your syllabus..." autocomplete="off">
+          <button class="chat-send" id="chatSend" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+      <div class="source-panel">
+        <div class="panel-label">Retrieved from syllabus</div>
+        <div class="source-item">
+          <div class="source-tag">1</div>
+          <div>Grading Policy, p. 2<span class="excerpt">"Final Exam: 50% of total grade."</span></div>
+        </div>
+        <div class="source-item">
+          <div class="source-tag">2</div>
+          <div>Attendance Policy, p. 3<span class="excerpt">No specific absence penalty found in document.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="tools">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Built-in calculators</div>
+      <h2>Beyond chat — real numbers you can trust.</h2>
+      <p>GPA math and study planning don't need guesswork either. These run as plain calculations, not language-model guesses.</p>
+    </div>
+    <div class="tools-grid">
+
+      <div class="tool-card">
+        <div class="tool-head">
+          <div class="tool-icon">Σ</div>
+          <h3>GPA impact simulator</h3>
+        </div>
+        <p class="desc">See how a course grade changes your cumulative GPA before you take the exam.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="curGpa">Current GPA</label>
+            <input type="number" id="curGpa" step="0.01" min="0" max="4" value="3.20">
+          </div>
+          <div class="field">
+            <label for="curCredits">Completed credits</label>
+            <input type="number" id="curCredits" min="0" value="60">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="courseCredits">This course's credits</label>
+            <input type="number" id="courseCredits" min="1" value="3">
+          </div>
+          <div class="field">
+            <label for="expectedGrade">Expected grade</label>
+            <select id="expectedGrade">
+              <option value="4.0">A</option>
+              <option value="3.7">A-</option>
+              <option value="3.3">B+</option>
+              <option value="3.0" selected>B</option>
+              <option value="2.7">B-</option>
+              <option value="2.3">C+</option>
+              <option value="2.0">C</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="calcGpa()">Calculate new GPA</button>
+
+        <div class="tool-result" id="gpaResult">
+          <div class="big" id="gpaBig">3.20</div>
+          <div class="tiny" id="gpaTiny">Your new cumulative GPA</div>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-head">
+          <div class="tool-icon">▤</div>
+          <h3>Study schedule generator</h3>
+        </div>
+        <p class="desc">List your topics and exam date — get a day-by-day revision plan.</p>
+
+        <div class="field">
+          <label for="topics">Topics (comma separated)</label>
+          <textarea id="topics" rows="2">Arrays, Linked Lists, Stacks, Queues, Trees, Graphs</textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="daysLeft">Days until exam</label>
+            <input type="number" id="daysLeft" min="1" value="7">
+          </div>
+          <div class="field">
+            <label for="hoursDay">Hours per day</label>
+            <input type="number" id="hoursDay" min="1" value="3">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="genSchedule()">Generate plan</button>
+
+        <div class="tool-result" id="schedResult">
+          <table class="schedule-table" id="schedTable">
+            <thead><tr><th>Day</th><th>Focus</th><th>Hours</th></tr></thead>
+            <tbody id="schedBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="stack" id="stack">
+  <div class="wrap">
+    <div class="stack-row">
+      <span class="stack-label">AI & agent core</span>
+      <span class="chip">Python</span><span class="chip">LangChain</span><span class="chip">FAISS</span><span class="chip">HuggingFace Embeddings</span><span class="chip">Groq API</span>
+    </div>
+    <div class="stack-row">
+      <span class="stack-label">Backend</span>
+      <span class="chip">FastAPI</span><span class="chip">Pydantic</span>
+    </div>
+    <div class="stack-row">
+      <span class="stack-label">Frontend</span>
+      <span class="chip">HTML5</span><span class="chip">CSS3</span><span class="chip">Vanilla JS</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <div class="brand"><span class="brand-mark" style="width:28px;height:28px;font-size:0.75rem;">G</span>Grounded</div>
+    <div>University Course Syllabus & Exam Assistant</div>
+  </div>
+</footer>
+
+<script src="./js/app.js"></script>
 </body>
 </html>
