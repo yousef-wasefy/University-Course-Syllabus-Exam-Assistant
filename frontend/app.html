@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Syllabus Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/app.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <header class="app-top">
+    <div class="app-brand"><span class="brand-mark"></span>Syllabus Assistant</div>
+    <div class="file-chip" id="fileChip" hidden>
+      <span class="file-icon">&#128196;</span>
+      <span class="file-name" id="fileName"></span>
+      <button class="change-btn" id="changeBtn">Change</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="upload-view" id="uploadView">
+      <div class="dropzone" id="dropzone">
+        <div class="dz-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v12"></path>
+            <path d="M7 8l5-5 5 5"></path>
+            <path d="M5 21h14"></path>
+          </svg>
+        </div>
+        <div class="dz-title">Drop your syllabus PDF here</div>
+        <div class="dz-sub">or <span>click to browse</span></div>
+        <input type="file" id="fileInput" accept="application/pdf" hidden>
+      </div>
+    </section>
+
+    <section class="chat-view" id="chatView" hidden>
+      <div class="chat-scroll" id="chatScroll"></div>
+      <div class="chat-bar">
+        <div class="chat-bar-inner">
+          <input type="text" id="chatInput" placeholder="Ask anything about your syllabus..." autocomplete="off">
+          <button class="send-btn" id="sendBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="M13 6l6 6-6 6"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="./js/app.js"></script>
+</body>
+</html>
